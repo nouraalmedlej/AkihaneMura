@@ -1,0 +1,2 @@
+# AkihaneMura
+A Japanese Village
