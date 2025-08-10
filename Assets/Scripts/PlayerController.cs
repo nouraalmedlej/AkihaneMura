@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         // اتجاه الإدخال
-        Vector3 inputDir = new Vector3(x, 0f, z).normalized;
+        Vector3 inputDir = new Vector3(x, 0f, z);
 
         // حركة ودوران نسبيان لاتجاه الكاميرا
         //if (inputDir.sqrMagnitude > 0.001f)
@@ -49,6 +49,10 @@ public class PlayerController : MonoBehaviour
 
         //    Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
            controller.Move(inputDir* moveSpeed * Time.deltaTime);
+        if (inputDir.z >= 0.1f || inputDir.x>= 0.1f){
+
+            anim.SetBool("walk", true);
+        }
         //}
 
         // أنيميشن سرعة أفقية
@@ -56,8 +60,9 @@ public class PlayerController : MonoBehaviour
         {
             // سرعة أفقية فعلية بدون محور Y
             Vector3 horizVel = controller.velocity; horizVel.y = 0f;
-            anim.SetFloat("Speed", horizVel.magnitude);
+            anim.SetFloat("walk", horizVel.magnitude);
         }
+
 
         // قفز + تأريض
         if (controller.isGrounded && velocity.y < 0f)
