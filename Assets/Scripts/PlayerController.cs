@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
 
     private CharacterController controller;
-    public Animator anim;
+    private Animator anim;
     private Vector3 velocity;
     private float turnSmoothVelocity;
 
@@ -30,39 +30,34 @@ public class PlayerController : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         // اتجاه الإدخال
-        Vector3 inputDir = new Vector3(x, 0f, z);
+        Vector3 inputDir = new Vector3(x, 0f, z).normalized;
 
         // حركة ودوران نسبيان لاتجاه الكاميرا
-        //if (inputDir.sqrMagnitude > 0.001f)
-        //{
-        //    float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg;
-        //    if (cameraTransform) targetAngle += cameraTransform.eulerAngles.y;
+        if (inputDir.sqrMagnitude > 0.001f)
+        {
+            float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg;
+            if (cameraTransform) targetAngle += cameraTransform.eulerAngles.y;
 
-        //    float angle = Mathf.SmoothDampAngle(
-        //        transform.eulerAngles.y,
-        //        targetAngle,
-        //        ref turnSmoothVelocity,
-        //        1f / Mathf.Max(0.001f, rotationSpeed) // زمن نعومة قصير = التفاف أسرع
-        //    );
+            float angle = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetAngle,
+                ref turnSmoothVelocity,
+                1f / Mathf.Max(0.001f, rotationSpeed) // زمن نعومة قصير = التفاف أسرع
+            );
 
-        //    transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-        //    Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-           controller.Move(inputDir* moveSpeed * Time.deltaTime);
-        if (inputDir.z >= 0.1f || inputDir.x>= 0.1f){
-
-            anim.SetBool("walk", true);
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            controller.Move(moveDir * moveSpeed * Time.deltaTime);
         }
-        //}
 
         // أنيميشن سرعة أفقية
         if (anim)
         {
             // سرعة أفقية فعلية بدون محور Y
             Vector3 horizVel = controller.velocity; horizVel.y = 0f;
-            anim.SetFloat("walk", horizVel.magnitude);
+            anim.SetFloat("Speed", horizVel.magnitude);
         }
-
 
         // قفز + تأريض
         if (controller.isGrounded && velocity.y < 0f)

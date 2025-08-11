@@ -1,50 +1,23 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
-    public GameObject gameOverPanel;
 
-    [Header("UI")]
-    public Slider healthBar;
-    public TMP_Text hpText;
-
-    void Start()
-    {
-        currentHealth = maxHealth;
-        if (gameOverPanel) gameOverPanel.SetActive(false);
-        UpdateUI();
-    }
+    void Start() { currentHealth = maxHealth; }
 
     public void TakeDamage(int amount)
     {
         currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
-        UpdateUI();
         if (currentHealth <= 0) Die();
-    }
-
-    void UpdateUI()
-    {
-        if (healthBar) healthBar.value = currentHealth;
-        if (hpText) hpText.text = $"HP: {currentHealth}";
     }
 
     void Die()
     {
-        Time.timeScale = 0f;
-        if (gameOverPanel) gameOverPanel.SetActive(true);
+        Time.timeScale = 1f; // تأكيد
         Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
-    }
-
-    public void Retry()
-    {
-        Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("GameOver");
     }
 }
-
-
