@@ -5705,6 +5705,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   jumpForce: 5
   gravity: -9.81
+  anim: {fileID: 1643214684}
 --- !u!143 &1651030680
 CharacterController:
   m_ObjectHideFlags: 0
